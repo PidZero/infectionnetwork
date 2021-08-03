@@ -1,12 +1,13 @@
 #ifndef NETCLASS1_H
 #define NETCLASS1_H
-
+    
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <random>
 #include <numeric>
+#include <cmath>
 
 class cl_network{
     public:
@@ -24,7 +25,7 @@ class cl_network{
 
     public:
         // als naechses Netzwerk mit poissonverteilten kanten um den gew'hlten knoten
-        void initNet(int arg_size, int arg_meanDegree){
+        void initNetRandom(int arg_size, int arg_meanDegree){
             N = arg_size;
             std::poisson_distribution<int> poissonDist(arg_meanDegree);
             adjacency.clear();
@@ -34,8 +35,8 @@ class cl_network{
             }
             for(int ii = 0; ii < arg_size-1; ii++){
                 std::uniform_int_distribution<int> uniDist(ii+1, arg_size-1);
-                int N = poissonDist(gen);
-                for(int jj = 0; jj < N; jj++){
+                int neighbours = poissonDist(gen);
+                for(int jj = 0; jj < neighbours; jj++){
                     int k = uniDist(gen);
                     adjacency.at(ii).at(k) = 1;
                     adjacency.at(k).at(ii) = 1;
@@ -44,6 +45,61 @@ class cl_network{
 
             makeList();
         }
+
+    public:
+        // als naechses Netzwerk mit normalverteilten kanten um den gew'hlten knoten
+        void initNetNormal(int arg_size, int arg_meanDegree, double arg_width){
+            N = arg_size;
+            std::poisson_distribution<int> poissonDist(arg_meanDegree);
+            std::normal_distribution<double> normalDist(0., arg_width);
+            adjacency.clear();
+            adjacency.resize(arg_size);
+            for(int ii = 0; ii < arg_size; ii++){
+                adjacency.at(ii).resize(arg_size);
+            }
+            for(int ii = 0; ii < arg_size-1; ii++){
+                std::uniform_int_distribution<int> uniDist(ii+1, arg_size-1);
+                int neighbours = poissonDist(gen);
+                for(int jj = 0; jj < neighbours; jj++){
+                    int k = ceil(abs(normalDist(gen)));
+                    if(ii+k < arg_size){
+                        adjacency.at(ii).at(ii+k) = 1;
+                        adjacency.at(ii+k).at(ii) = 1;
+                    }
+                }
+            }
+
+            makeList();
+        }
+
+    public:
+        void initNetUndirectedPrice(int arg_size, int c, int a){
+            N = arg_size;
+            double r = double(c)/(double(c) + double(a));
+            std::uniform_real_distribution<> real_uniDist(0., 1.);
+            std::vector < int > targetList;
+            targetList.push_back(0);
+            for(int ii = 0; ii < N; ii++){
+                for(int jj = 0; jj < c; jj++){
+                    if(real_uniDist(gen) < r){
+                        std::uniform_int_distribution<int> uniDist(0, targetList.size());
+                        int k = targetList.at(uniDist(gen));
+                        adjacency.at(ii).at(k) = 1;
+                        adjacency.at(k).at(ii) = 1;
+                        targetList.push_back(ii);
+                        targetList.push_back(k);
+                    }else{
+                        std::uniform_int_distribution<int> uniDist(0, N);
+                        int k = uniDist(gen);
+                        adjacency.at(ii).at(k) = 1;
+                        adjacency.at(k).at(ii) = 1;
+                        targetList.push_back(ii);
+                        targetList.push_back(k);
+                    }
+                }
+            }
+        }
+ 
 
     public: 
         void initInfection(int arg_I, double arg_infectionProb){
