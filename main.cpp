@@ -2,7 +2,7 @@
 
 int main(){
     cl_network net;
-    net.initNetNormal(1000, 5, 15);
+    net.initNetUndirectedPrice(1000, 1, 1);
     net.initInfection(3, 0.1);
     while(net.numberI > 0){
         net.printState();

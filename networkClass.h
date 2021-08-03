@@ -1,6 +1,6 @@
 #ifndef NETCLASS1_H
 #define NETCLASS1_H
-    
+
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -78,18 +78,24 @@ class cl_network{
             double r = double(c)/(double(c) + double(a));
             std::uniform_real_distribution<> real_uniDist(0., 1.);
             std::vector < int > targetList;
+            adjacency.clear();
+            adjacency.resize(N);
+            for(int ii = 0; ii < arg_size; ii++){
+                adjacency.at(ii).resize(N);
+            }
+
             targetList.push_back(0);
             for(int ii = 0; ii < N; ii++){
                 for(int jj = 0; jj < c; jj++){
                     if(real_uniDist(gen) < r){
-                        std::uniform_int_distribution<int> uniDist(0, targetList.size());
+                        std::uniform_int_distribution<int> uniDist(0, targetList.size()-1);
                         int k = targetList.at(uniDist(gen));
                         adjacency.at(ii).at(k) = 1;
                         adjacency.at(k).at(ii) = 1;
                         targetList.push_back(ii);
                         targetList.push_back(k);
                     }else{
-                        std::uniform_int_distribution<int> uniDist(0, N);
+                        std::uniform_int_distribution<int> uniDist(0, N-1);
                         int k = uniDist(gen);
                         adjacency.at(ii).at(k) = 1;
                         adjacency.at(k).at(ii) = 1;
@@ -98,8 +104,10 @@ class cl_network{
                     }
                 }
             }
+
+            makeList();
         }
- 
+
 
     public: 
         void initInfection(int arg_I, double arg_infectionProb){
