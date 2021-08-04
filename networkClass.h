@@ -1,3 +1,7 @@
+// //////////////////////////////////////////////// //
+// (c) J. Neidhart, 2021                            //
+// Basic Network Class for simple SIR dynamics      //
+// //////////////////////////////////////////////// //
 #ifndef NETCLASS1_H
 #define NETCLASS1_H
 
@@ -13,18 +17,29 @@ class cl_network{
     public:
         cl_network(){};
         ~cl_network(){};
-
+        
+        // Adjaceny Matrix
         std::vector < std::vector < double > > adjacency;
+
+        // Adjacency List
         std::vector < std::vector < int > > adList;
+
+        // Vector to store the labels of the susceptible
         std::vector < bool > S;
+
+        // Vector to store the labels of the resistant
         std::vector < bool > R;
+
+        // Vector to store the labels of the infected
         std::vector < bool > I;
+
+        // Numbers of the resistant, infected and susceptible
         int numberR;
         int numberI;
         int numberS;
 
     public:
-        // als naechses Netzwerk mit poissonverteilten kanten um den gew'hlten knoten
+        // create a network with Poisson distributed number of random edges
         void initNetRandom(int arg_size, int arg_meanDegree){
             N = arg_size;
             std::poisson_distribution<int> poissonDist(arg_meanDegree);
@@ -47,7 +62,7 @@ class cl_network{
         }
 
     public:
-        // als naechses Netzwerk mit normalverteilten kanten um den gew'hlten knoten
+        // create a network with normal distributed edges 
         void initNetNormal(int arg_size, int arg_meanDegree, double arg_width){
             N = arg_size;
             std::poisson_distribution<int> poissonDist(arg_meanDegree);
@@ -73,6 +88,7 @@ class cl_network{
         }
 
     public:
+        // create an undirected Price model
         void initNetUndirectedPrice(int arg_size, int c, int a){
             N = arg_size;
             double r = double(c)/(double(c) + double(a));
@@ -109,7 +125,50 @@ class cl_network{
         }
 
 
+    public:
+        // create an undirected Price model with poisson distributed parameter c
+        void initNetUndirectedPoissonPrice(int arg_size, int poissonParameter, int a){
+            std::poisson_distribution<int> poissonDist(poissonParameter);
+            N = arg_size;
+            double r;
+            int c;            
+            std::uniform_real_distribution<> real_uniDist(0., 1.);
+            std::vector < int > targetList;
+            adjacency.clear();
+            adjacency.resize(N);
+            for(int ii = 0; ii < arg_size; ii++){
+                adjacency.at(ii).resize(N);
+            }
+
+            targetList.push_back(0);
+            for(int ii = 0; ii < N; ii++){
+                c = poissonDist(gen);
+                r =  double(c)/(double(c) + double(a));
+                for(int jj = 0; jj < c; jj++){
+                    if(real_uniDist(gen) < r){
+                        std::uniform_int_distribution<int> uniDist(0, targetList.size()-1);
+                        int k = targetList.at(uniDist(gen));
+                        adjacency.at(ii).at(k) = 1;
+                        adjacency.at(k).at(ii) = 1;
+                        targetList.push_back(ii);
+                        targetList.push_back(k);
+                    }else{
+                        std::uniform_int_distribution<int> uniDist(0, N-1);
+                        int k = uniDist(gen);
+                        adjacency.at(ii).at(k) = 1;
+                        adjacency.at(k).at(ii) = 1;
+                        targetList.push_back(ii);
+                        targetList.push_back(k);
+                    }
+                }
+            }
+
+            makeList();
+        }
+
+
     public: 
+        // Initialize the starting setup for SIR dynamic
         void initInfection(int arg_I, double arg_infectionProb){
             int k; 
             p = arg_infectionProb;
@@ -129,6 +188,7 @@ class cl_network{
         }
 
     public:
+        // generate time step
         void timestep(){
             std::uniform_real_distribution<> chance(0., 1.);
             std::vector <bool> oldI;
@@ -160,6 +220,7 @@ class cl_network{
 
 
     public:
+        // print the current state of the infectious dynamic
         void printState(){
             int iS, iI, iR;
             iS = std::accumulate(S.begin(), S.end(), 0);
@@ -169,6 +230,7 @@ class cl_network{
         }
 
     public:
+        // print the adjacency matrix to a file
         void printAdjacency(std::string arg_filename){
             std::ofstream myfile;
             myfile.open(arg_filename);
@@ -195,12 +257,16 @@ class cl_network{
 
 
     private:
+        // the ramdom number generator is of the Mersenne Twister type
         std::mt19937_64 gen{std::random_device{}()};
+        // The number of nodes is N
         int N{0};
+        // The infection probability is p
         double p{0};
 
 
     private:
+        // create an adjacency list from the adjacency matrix
         void makeList(){
             adList.resize(N);
             for(int ii = 0; ii < N; ii++){
