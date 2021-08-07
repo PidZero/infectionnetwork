@@ -167,6 +167,50 @@ class cl_network{
         }
 
 
+    public:
+        // create a Watts-Strogatz Graph Model
+        void initNetWattsStrogatz(int arg_size, int arg_edges, double arg_rewiringProbability){
+            N = arg_size;
+            std::uniform_real_distribution<> real_uniDist(0., 1.);
+            std::uniform_int_distribution<int> uniDist(0, N-1);
+            int k = arg_edges;
+            double beta = arg_rewiringProbability;
+            adjacency.clear();
+            adjacency.resize(N);
+            for(int ii = 0; ii < arg_size; ii++){
+                adjacency.at(ii).resize(N);
+            }
+            // connect eacch node to the k next nodes (for strict Watts Strogatz it should be connected to k/2 before
+            // and k/2 after)
+            for(int ii = 0; ii < N; ii++){
+                for(int jj = 1; jj <= k; jj++){
+                    int h = (ii+jj)%N;
+                    adjacency.at(ii).at(h) = 1;
+                    adjacency.at(h).at(ii) = 1;
+                }
+            }
+            // Go through all edges and rewire each edge with probability beta
+            for(int ii = 0; ii < N; ii++){
+                for(int jj = ii; jj < N; jj++){
+                    if(adjacency.at(ii).at(jj)){
+                        // rewire with probability beta
+                        if(real_uniDist(gen) < beta){
+                            //reset edge
+                            adjacency.at(ii).at(jj) = 0;
+                            adjacency.at(jj).at(ii) = 0;
+                            int h = ii;
+                            while(h == ii){
+                                h = uniDist(gen);
+                            }
+                            adjacency.at(ii).at(h) = 1;
+                            adjacency.at(h).at(ii) = 1;
+                        }
+                    }
+                }
+            }
+            makeList();
+        }
+ 
     public: 
         // Initialize the starting setup for SIR dynamic
         void initInfection(int arg_I, double arg_infectionProb){
