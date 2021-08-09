@@ -24,6 +24,12 @@ class cl_network{
         // Adjacency List
         std::vector < std::vector < int > > adList;
 
+        // Degree Vector
+        std::vector < int > degrees;
+
+        // Mean Degree
+        double meanDegree;
+
         // Vector to store the labels of the susceptible
         std::vector < bool > S;
 
@@ -211,6 +217,26 @@ class cl_network{
             makeList();
         }
  
+    public:
+        // calculate the degree vector and the mean degree
+        void calculateDegrees(){
+            meanDegree = 0;
+            degrees.clear();
+            degrees.resize(N);
+            for(int ii = 0; ii < N; ii++){
+                for(int jj = 0; jj < N; jj++){
+                    degrees.at(ii) += adjacency.at(ii).at(jj);
+                }
+                meanDegree += degrees.at(ii);
+            }
+            meanDegree /= (double)N;
+        }
+
+
+    public:
+        // Implement Breadth First Search for finding shortest paths and Diameter, which is the longest shortest path
+        void calculatePathStatistics(){
+        }
     public: 
         // Initialize the starting setup for SIR dynamic
         void initInfection(int arg_I, double arg_infectionProb){
