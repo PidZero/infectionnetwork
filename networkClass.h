@@ -232,10 +232,46 @@ class cl_network{
             meanDegree /= (double)N;
         }
 
+    private:
+        // calculate distance of all nodes to given node. This is a direct implementation of Newman, Ch.10.3.3
+        std::vector < int > distances(int initialNode){
+            std::vector < int > queue;
+            std::vector < int > distList;
+            int readPointer = 0;
+            int writePointer = 1;
+            queue.clear();
+            queue.resize(N);
+            distList.clear();
+            queue.at(0) = initialNode;
+            distList.resize(N, -1);
+            distList.at(initialNode) = 0;
+            while(true){
+                if(readPointer == writePointer){
+                    break;
+                }
+                int label = queue.at(readPointer);
+                readPointer++;
+                int d = distList.at(label);
+                for(const auto & a: adList.at(label)){
+                    if(distList.at(a) == -1){
+                        distList.at(a) = d+1;
+                        queue.at(writePointer) = a;
+                        writePointer++;
+                    }
+                }
+            }
+            return(distList);
+        }
+                        
+
+
 
     public:
         // Implement Breadth First Search for finding shortest paths and Diameter, which is the longest shortest path
         void calculatePathStatistics(){
+            for(auto &a: distances(0)){
+                std::cout<<a<<std::endl;
+            }
         }
     public: 
         // Initialize the starting setup for SIR dynamic

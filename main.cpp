@@ -11,6 +11,8 @@ int main(){
     net.printState();
     net.printAdjacency("net1.csv");
     net.calculateDegrees();
+    net.calculatePathStatistics();
     std::cout<<"Mean Degree: "<<net.meanDegree<<std::endl;
+
     return(0);
 }
