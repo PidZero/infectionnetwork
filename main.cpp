@@ -1,8 +1,13 @@
+// /////////////////////////////////////////////////////////////// //
+// Network Class example main.                                     //
+// (c) 2021, J. Neidhart                                           //
+// /////////////////////////////////////////////////////////////// //
+
 #include "networkClass.h"
 
 int main(){
     cl_network net;
-   net.initNetWattsStrogatz(1000, 3, .25);
+    net.initNetWattsStrogatz(1000, 3, .25);
     net.initInfection(8, 0.3);
     while(net.numberI > 0){
         net.printState();

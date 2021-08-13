@@ -1,7 +1,7 @@
-// //////////////////////////////////////////////// //
-// (c) J. Neidhart, 2021                            //
-// Basic Network Class for simple SIR dynamics      //
-// //////////////////////////////////////////////// //
+// /////////////////////////////////////////////////////////////// //
+// Network Class. Basic Network Class for simple SIR dynamics      //
+// (c) 2021, J. Neidhart                                           //
+// /////////////////////////////////////////////////////////////// //
 #ifndef NETCLASS1_H
 #define NETCLASS1_H
 
@@ -17,7 +17,7 @@ class cl_network{
     public:
         cl_network(){};
         ~cl_network(){};
-        
+
         // Adjaceny Matrix
         std::vector < std::vector < double > > adjacency;
 
@@ -216,7 +216,7 @@ class cl_network{
             }
             makeList();
         }
- 
+
     public:
         // calculate the degree vector and the mean degree
         void calculateDegrees(){
@@ -262,13 +262,13 @@ class cl_network{
             }
             return(distList);
         }
-                        
+
 
 
     public:
         // Implement Breadth First Search for finding shortest paths and Diameter, which is the longest shortest path
         void calculatePathStatistics(){
-        //    for(auto &a: distances(0)){
+            //    for(auto &a: distances(0)){
             double sum{0.};
             int max{0};
             for(int ii = 0; ii < N; ii++){ 
@@ -283,7 +283,7 @@ class cl_network{
             maxDistance = max;
             std::cout<<"Mean Distance: "<<meanDistance<<";  Diameter: "<<maxDistance<<std::endl;
         }
-    public: 
+            public: 
         // Initialize the starting setup for SIR dynamic
         void initInfection(int arg_I, double arg_infectionProb){
             int k; 
@@ -303,7 +303,7 @@ class cl_network{
             }
         }
 
-    public:
+            public:
         // generate time step
         void timestep(){
             std::uniform_real_distribution<> chance(0., 1.);
@@ -335,7 +335,7 @@ class cl_network{
 
 
 
-    public:
+            public:
         // print the current state of the infectious dynamic
         void printState(){
             int iS, iI, iR;
@@ -345,7 +345,7 @@ class cl_network{
             std::cout<<iS<<"\t"<<iI<<"\t"<<iR<<"\t"<<N<<"\t"<<iS+iI+iR<<std::endl;
         }
 
-    public:
+            public:
         // print the adjacency matrix to a file
         void printAdjacency(std::string arg_filename){
             std::ofstream myfile;
@@ -372,7 +372,7 @@ class cl_network{
         }
 
 
-    private:
+            private:
         // the ramdom number generator is of the Mersenne Twister type
         std::mt19937_64 gen{std::random_device{}()};
         // The number of nodes is N
@@ -384,7 +384,7 @@ class cl_network{
         // Diameter i.e. maximum distance between nodes
         int maxDistance{0};
 
-    private:
+            private:
         // create an adjacency list from the adjacency matrix
         void makeList(){
             adList.resize(N);
@@ -397,6 +397,6 @@ class cl_network{
             }
         }
 
-};
+        };
 
 #endif

@@ -8,6 +8,6 @@ This project is supposed to create a class to simulate infection dynamics on sev
 * Random Networks
 * Undirected Price Model / Barabasi - Albert Model
 * Undirected Price Model with Poisson distributed neighbourhood
-
-Planned
 * Watts - Strogatz model
+
+The dynamics are basic SIR dynamics. Basic graph properties can be calculated as well.
