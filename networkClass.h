@@ -265,13 +265,23 @@ class cl_network{
                         
 
 
-
     public:
         // Implement Breadth First Search for finding shortest paths and Diameter, which is the longest shortest path
         void calculatePathStatistics(){
-            for(auto &a: distances(0)){
-                std::cout<<a<<std::endl;
+        //    for(auto &a: distances(0)){
+            double sum{0.};
+            int max{0};
+            for(int ii = 0; ii < N; ii++){ 
+                for(auto &a: distances(ii)){
+                    sum += double(a);
+                    if(a > max){
+                        max = a;        
+                    }
+                }
             }
+            meanDistance = (sum/double(N))/double(N);
+            maxDistance = max;
+            std::cout<<"Mean Distance: "<<meanDistance<<";  Diameter: "<<maxDistance<<std::endl;
         }
     public: 
         // Initialize the starting setup for SIR dynamic
@@ -368,8 +378,11 @@ class cl_network{
         // The number of nodes is N
         int N{0};
         // The infection probability is p
-        double p{0};
-
+        double p{0.};
+        // mean Distance between nodes
+        double meanDistance{0.};
+        // Diameter i.e. maximum distance between nodes
+        int maxDistance{0};
 
     private:
         // create an adjacency list from the adjacency matrix

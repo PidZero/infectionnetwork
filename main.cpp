@@ -2,8 +2,8 @@
 
 int main(){
     cl_network net;
-   net.initNetWattsStrogatz(100, 4, .25);
-    net.initInfection(3, 0.3);
+   net.initNetWattsStrogatz(1000, 3, .25);
+    net.initInfection(8, 0.3);
     while(net.numberI > 0){
         net.printState();
         net.timestep();
