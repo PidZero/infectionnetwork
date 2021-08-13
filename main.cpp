@@ -5,6 +5,8 @@
 
 #include "networkClass.h"
 
+
+
 int main(){
     cl_network net;
     net.initNetWattsStrogatz(1000, 3, .25);
