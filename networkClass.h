@@ -44,6 +44,7 @@ class cl_network{
         int numberI;
         int numberS;
 
+
     public:
         // create a network with Poisson distributed number of random edges
         void initNetRandom(int arg_size, int arg_meanDegree){
@@ -51,8 +52,8 @@ class cl_network{
             std::poisson_distribution<int> poissonDist(arg_meanDegree);
             adjacency.clear();
             adjacency.resize(arg_size);
-            for(int ii = 0; ii < arg_size; ii++){
-                adjacency.at(ii).resize(arg_size);
+            for(auto & a: adjacency){
+                a.resize(arg_size);
             }
             for(int ii = 0; ii < arg_size-1; ii++){
                 std::uniform_int_distribution<int> uniDist(ii+1, arg_size-1);
@@ -67,6 +68,7 @@ class cl_network{
             makeList();
         }
 
+
     public:
         // create a network with normal distributed edges 
         void initNetNormal(int arg_size, int arg_meanDegree, double arg_width){
@@ -75,9 +77,10 @@ class cl_network{
             std::normal_distribution<double> normalDist(0., arg_width);
             adjacency.clear();
             adjacency.resize(arg_size);
-            for(int ii = 0; ii < arg_size; ii++){
-                adjacency.at(ii).resize(arg_size);
+            for(auto & a: adjacency){
+                a.resize(arg_size);
             }
+
             for(int ii = 0; ii < arg_size-1; ii++){
                 std::uniform_int_distribution<int> uniDist(ii+1, arg_size-1);
                 int neighbours = poissonDist(gen);
@@ -102,8 +105,8 @@ class cl_network{
             std::vector < int > targetList;
             adjacency.clear();
             adjacency.resize(N);
-            for(int ii = 0; ii < arg_size; ii++){
-                adjacency.at(ii).resize(N);
+            for(auto & a: adjacency){
+                a.resize(arg_size);
             }
 
             targetList.push_back(0);
@@ -142,8 +145,8 @@ class cl_network{
             std::vector < int > targetList;
             adjacency.clear();
             adjacency.resize(N);
-            for(int ii = 0; ii < arg_size; ii++){
-                adjacency.at(ii).resize(N);
+            for(auto & a: adjacency){
+                a.resize(arg_size);
             }
 
             targetList.push_back(0);
@@ -183,9 +186,11 @@ class cl_network{
             double beta = arg_rewiringProbability;
             adjacency.clear();
             adjacency.resize(N);
-            for(int ii = 0; ii < arg_size; ii++){
-                adjacency.at(ii).resize(N);
+            for(auto & a: adjacency){
+                a.resize(arg_size);
             }
+
+
             // connect eacch node to the k next nodes (for strict Watts Strogatz it should be connected to k/2 before
             // and k/2 after)
             for(int ii = 0; ii < N; ii++){
@@ -217,6 +222,7 @@ class cl_network{
             makeList();
         }
 
+
     public:
         // calculate the degree vector and the mean degree
         void calculateDegrees(){
@@ -231,6 +237,7 @@ class cl_network{
             }
             meanDegree /= (double)N;
         }
+
 
     private:
         // calculate distance of all nodes to given node. This is a direct implementation of Newman, Ch.10.3.3
@@ -264,7 +271,6 @@ class cl_network{
         }
 
 
-
     public:
         // Implement Breadth First Search for finding shortest paths and Diameter, which is the longest shortest path
         void calculatePathStatistics(){
@@ -283,7 +289,9 @@ class cl_network{
             maxDistance = max;
             std::cout<<"Mean Distance: "<<meanDistance<<";  Diameter: "<<maxDistance<<std::endl;
         }
-            public: 
+
+
+    public: 
         // Initialize the starting setup for SIR dynamic
         void initInfection(int arg_I, double arg_infectionProb){
             int k; 
@@ -303,7 +311,8 @@ class cl_network{
             }
         }
 
-            public:
+
+    public:
         // generate time step
         void timestep(){
             std::uniform_real_distribution<> chance(0., 1.);
@@ -333,9 +342,7 @@ class cl_network{
         }
 
 
-
-
-            public:
+    public:
         // print the current state of the infectious dynamic
         void printState(){
             int iS, iI, iR;
@@ -345,7 +352,8 @@ class cl_network{
             std::cout<<iS<<"\t"<<iI<<"\t"<<iR<<"\t"<<N<<"\t"<<iS+iI+iR<<std::endl;
         }
 
-            public:
+
+    public:
         // print the adjacency matrix to a file
         void printAdjacency(std::string arg_filename){
             std::ofstream myfile;
@@ -372,7 +380,7 @@ class cl_network{
         }
 
 
-            private:
+    private:
         // the ramdom number generator is of the Mersenne Twister type
         std::mt19937_64 gen{std::random_device{}()};
         // The number of nodes is N
@@ -384,7 +392,7 @@ class cl_network{
         // Diameter i.e. maximum distance between nodes
         int maxDistance{0};
 
-            private:
+    private:
         // create an adjacency list from the adjacency matrix
         void makeList(){
             adList.resize(N);

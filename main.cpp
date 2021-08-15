@@ -9,7 +9,8 @@
 
 int main(){
     cl_network net;
-    net.initNetWattsStrogatz(1000, 3, .25);
+//    net.initNetWattsStrogatz(1000, 3, .25);
+    net.initNetRandom(200,2);
     net.initInfection(8, 0.3);
     while(net.numberI > 0){
         net.printState();
