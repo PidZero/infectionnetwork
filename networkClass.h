@@ -40,9 +40,9 @@ class cl_network{
         std::vector < bool > I;
 
         // Numbers of the resistant, infected and susceptible
-        int numberR;
-        int numberI;
-        int numberS;
+        int numberR{0};
+        int numberI{0};
+        int numberS{0};
 
     public:
         // create a network with Poisson distributed number of random edges
@@ -279,9 +279,15 @@ class cl_network{
             int k; 
             p = arg_infectionProb;
             std::uniform_int_distribution<int> uniDist(0, N-1);
+            S.clear();
+            I.clear();
+            R.clear();
             S.resize(N, 1);
             I.resize(N, 0);
             R.resize(N, 0);
+            numberI = arg_I;
+            numberS = N-arg_I;
+            numberR = 0;
             for(int ii = 0; ii < arg_I; ii++){
                 k = uniDist(gen);
                 if(I.at(k) == 0){
@@ -333,6 +339,29 @@ class cl_network{
             iI = std::accumulate(I.begin(), I.end(), 0);
             iR = std::accumulate(R.begin(), R.end(), 0);
             std::cout<<iS<<"\t"<<iI<<"\t"<<iR<<"\t"<<N<<"\t"<<iS+iI+iR<<std::endl;
+        }
+
+    public:
+        // do statistics on a previously initialized Network
+        void statistics(int arg_repetitions){
+            std::vector < double > timeline;
+            int time{0};
+            for(int ii = 0; ii < arg_repetitions; ii++){
+                initInfection(3, 0.3);
+                time = 0;
+                while(numberI > 0){
+                    if(timeline.size()<= time){
+                        timeline.push_back(numberI);
+                    }else{
+                        timeline.at(time) += numberI;
+                    }
+                    timestep();
+                    time++;
+                }
+            }
+            for(auto & a:timeline){
+                std::cout<<double(a)/double(arg_repetitions)<<std::endl;
+            }
         }
 
     public:

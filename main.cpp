@@ -3,7 +3,7 @@
 int main(){
     cl_network net;
    net.initNetWattsStrogatz(100, 4, .25);
-    net.initInfection(3, 0.3);
+  /*  net.initInfection(3, 0.3);
     while(net.numberI > 0){
         net.printState();
         net.timestep();
@@ -13,6 +13,7 @@ int main(){
     net.calculateDegrees();
     net.calculatePathStatistics();
     std::cout<<"Mean Degree: "<<net.meanDegree<<std::endl;
-
+*/
+   net.statistics(1000);
     return(0);
 }
