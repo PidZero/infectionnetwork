@@ -19,6 +19,7 @@ int main(){
     net.calculateDegrees();
     net.calculatePathStatistics();
     std::cout<<"Mean Degree: "<<net.meanDegree<<std::endl;
+
 */
    net.statistics(1000);
     return(0);
