@@ -11,7 +11,6 @@ int main(){
     cl_network net;
    net.initNetWattsStrogatz(100, 4, .25);
     /*while(net.numberI > 0){
-
         net.printState();
         net.timestep();
     }
