@@ -1,7 +1,7 @@
-// //////////////////////////////////////////////// //
-// (c) J. Neidhart, 2021                            //
-// Basic Network Class for simple SIR dynamics      //
-// //////////////////////////////////////////////// //
+// /////////////////////////////////////////////////////////////// //
+// Network Class. Basic Network Class for simple SIR dynamics      //
+// (c) 2021, J. Neidhart                                           //
+// /////////////////////////////////////////////////////////////// //
 #ifndef NETCLASS1_H
 #define NETCLASS1_H
 
@@ -17,7 +17,7 @@ class cl_network{
     public:
         cl_network(){};
         ~cl_network(){};
-        
+
         // Adjaceny Matrix
         std::vector < std::vector < double > > adjacency;
 
@@ -44,6 +44,7 @@ class cl_network{
         int numberI{0};
         int numberS{0};
 
+
     public:
         // create a network with Poisson distributed number of random edges
         void initNetRandom(int arg_size, int arg_meanDegree){
@@ -51,8 +52,8 @@ class cl_network{
             std::poisson_distribution<int> poissonDist(arg_meanDegree);
             adjacency.clear();
             adjacency.resize(arg_size);
-            for(int ii = 0; ii < arg_size; ii++){
-                adjacency.at(ii).resize(arg_size);
+            for(auto & a: adjacency){
+                a.resize(arg_size);
             }
             for(int ii = 0; ii < arg_size-1; ii++){
                 std::uniform_int_distribution<int> uniDist(ii+1, arg_size-1);
@@ -67,6 +68,7 @@ class cl_network{
             makeList();
         }
 
+
     public:
         // create a network with normal distributed edges 
         void initNetNormal(int arg_size, int arg_meanDegree, double arg_width){
@@ -75,9 +77,10 @@ class cl_network{
             std::normal_distribution<double> normalDist(0., arg_width);
             adjacency.clear();
             adjacency.resize(arg_size);
-            for(int ii = 0; ii < arg_size; ii++){
-                adjacency.at(ii).resize(arg_size);
+            for(auto & a: adjacency){
+                a.resize(arg_size);
             }
+
             for(int ii = 0; ii < arg_size-1; ii++){
                 std::uniform_int_distribution<int> uniDist(ii+1, arg_size-1);
                 int neighbours = poissonDist(gen);
@@ -102,8 +105,8 @@ class cl_network{
             std::vector < int > targetList;
             adjacency.clear();
             adjacency.resize(N);
-            for(int ii = 0; ii < arg_size; ii++){
-                adjacency.at(ii).resize(N);
+            for(auto & a: adjacency){
+                a.resize(arg_size);
             }
 
             targetList.push_back(0);
@@ -142,8 +145,8 @@ class cl_network{
             std::vector < int > targetList;
             adjacency.clear();
             adjacency.resize(N);
-            for(int ii = 0; ii < arg_size; ii++){
-                adjacency.at(ii).resize(N);
+            for(auto & a: adjacency){
+                a.resize(arg_size);
             }
 
             targetList.push_back(0);
@@ -183,9 +186,11 @@ class cl_network{
             double beta = arg_rewiringProbability;
             adjacency.clear();
             adjacency.resize(N);
-            for(int ii = 0; ii < arg_size; ii++){
-                adjacency.at(ii).resize(N);
+            for(auto & a: adjacency){
+                a.resize(arg_size);
             }
+
+
             // connect eacch node to the k next nodes (for strict Watts Strogatz it should be connected to k/2 before
             // and k/2 after)
             for(int ii = 0; ii < N; ii++){
@@ -216,7 +221,8 @@ class cl_network{
             }
             makeList();
         }
- 
+
+
     public:
         // calculate the degree vector and the mean degree
         void calculateDegrees(){
@@ -231,6 +237,7 @@ class cl_network{
             }
             meanDegree /= (double)N;
         }
+
 
     private:
         // calculate distance of all nodes to given node. This is a direct implementation of Newman, Ch.10.3.3
@@ -262,17 +269,28 @@ class cl_network{
             }
             return(distList);
         }
-                        
-
 
 
     public:
         // Implement Breadth First Search for finding shortest paths and Diameter, which is the longest shortest path
         void calculatePathStatistics(){
-            for(auto &a: distances(0)){
-                std::cout<<a<<std::endl;
+            //    for(auto &a: distances(0)){
+            double sum{0.};
+            int max{0};
+            for(int ii = 0; ii < N; ii++){ 
+                for(auto &a: distances(ii)){
+                    sum += double(a);
+                    if(a > max){
+                        max = a;        
+                    }
+                }
             }
+            meanDistance = (sum/double(N))/double(N);
+            maxDistance = max;
+            std::cout<<"Mean Distance: "<<meanDistance<<";  Diameter: "<<maxDistance<<std::endl;
         }
+
+
     public: 
         // Initialize the starting setup for SIR dynamic
         void initInfection(int arg_I, double arg_infectionProb){
@@ -298,6 +316,7 @@ class cl_network{
                 }
             }
         }
+
 
     public:
         // generate time step
@@ -329,8 +348,6 @@ class cl_network{
         }
 
 
-
-
     public:
         // print the current state of the infectious dynamic
         void printState(){
@@ -340,6 +357,7 @@ class cl_network{
             iR = std::accumulate(R.begin(), R.end(), 0);
             std::cout<<iS<<"\t"<<iI<<"\t"<<iR<<"\t"<<N<<"\t"<<iS+iI+iR<<std::endl;
         }
+
 
     public:
         // do statistics on a previously initialized Network
@@ -397,8 +415,11 @@ class cl_network{
         // The number of nodes is N
         int N{0};
         // The infection probability is p
-        double p{0};
-
+        double p{0.};
+        // mean Distance between nodes
+        double meanDistance{0.};
+        // Diameter i.e. maximum distance between nodes
+        int maxDistance{0};
 
     private:
         // create an adjacency list from the adjacency matrix
@@ -413,6 +434,6 @@ class cl_network{
             }
         }
 
-};
+        };
 
 #endif
