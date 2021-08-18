@@ -1,0 +1,14 @@
+// /////////////////////////////////////////////////////////////// //
+// SIR Class. Basic Class for simple SIR dynamics on a network     //
+// (c) 2021, J. Neidhart                                           //
+// /////////////////////////////////////////////////////////////// //
+
+# ifndef SIRCLASS_H
+# define SIRCLASS_H
+
+class sir{
+
+
+};
+
+#endif

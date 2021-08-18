@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////// //
-// Network Class. Basic Network Class for simple SIR dynamics      //
+// Network Class. Basic Network Class for simple dynamics          //
 // (c) 2021, J. Neidhart                                           //
 // /////////////////////////////////////////////////////////////// //
 #ifndef NETCLASS1_H
@@ -12,6 +12,9 @@
 #include <random>
 #include <numeric>
 #include <cmath>
+
+#include "sirClass.h"
+
 
 class cl_network{
     public:
