@@ -10,6 +10,7 @@
 int main(){
     cl_network net;
    net.initNetWattsStrogatz(100, 4, .25);
+   cl_sir sir(net.adList);
     /*while(net.numberI > 0){
         net.printState();
         net.timestep();
@@ -21,6 +22,6 @@ int main(){
     std::cout<<"Mean Degree: "<<net.meanDegree<<std::endl;
 
 */
-   net.statistics(1000);
+   sir.statistics(1000);
     return(0);
 }
